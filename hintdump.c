@@ -28,8 +28,10 @@ static void dump_keys(MPI_Info info) {
         MPI_Info_get(info, key, MPI_MAX_INFO_VAL-1, value, &flag);
         printf("key = %-25s  value = %-10s\n", key, value);
     }
-    return; 
-}                                                             
+    MPI_Info_get(info, "bg_nodes_pset", MPI_MAX_INFO_VAL-1, value, &flag);
+    if (flag) printf("key = %-25s  value = %-10s\n", "bg_nodes_pset", value);
+    return;
+}
 
 int main (int argc, char ** argv)
 {
