@@ -1,0 +1,17 @@
+#!/bin/bash -l
+#PBS -A radix-io
+#PBS -k doe
+#PBS -l walltime=0:10:00
+#PBS -l filesystems=home:grand
+#PBS -l select=2
+#PBS -l place=scatter
+#PBS -q debug
+
+set -ueo pipefail
+
+cd $PBS_O_WORKDIR
+HINTDUMP_DIR=${HOME}/src/hintdump
+
+# on cray-mpich, opening a directory will give an error
+touch /lus/grand/projects/radix-io/scratch/robl/default-hints
+mpiexec -n 30 --ppn 15 ${HINTDUMP_DIR}/hintdump /lus/grand/projects/radix-io/scratch/robl/default-hints

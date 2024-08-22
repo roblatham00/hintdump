@@ -1,0 +1,42 @@
+#!/bin/bash
+#PBS -l select=1
+#PBS -l daos=default
+#PBS -A CSC250STDM12_CNDA
+#PBS -l walltime=00:15:00
+#PBS -N hintdump-daos
+#PBS -k doe
+#PBS -V
+
+set -euo pipefail
+
+export TZ='/usr/share/zoneinfo/US/Central'
+
+NNODES=`wc -l < $PBS_NODEFILE`
+NRANKS=1          # Number of MPI ranks per node
+NDEPTH=104        # Number of hardware threads per rank, spacing between MPI ranks on a node
+NTOTRANKS=$(( NNODES * NRANKS ))
+
+DAOS_POOL=CSC250STDM12_CNDA
+DAOS_CONT=daos-paper-sx
+
+# confirm DAOS ok
+env|grep DRPC
+
+
+echo "mounting daos"
+launch-dfuse.sh ${DAOS_POOL}:${DAOS_CONT}
+
+touch /tmp/${DAOS_POOL}/${DAOS_CONT}/basic
+
+echo "hintdump default"
+mpiexec -np ${NTOTRANKS} -ppn ${NRANKS} -d ${NDEPTH} --cpu-bind depth --no-vni -envall \
+        ${HOME}/src/hintdump/hintdump /tmp/${DAOS_POOL}/${DAOS_CONT}/basic
+
+echo "hintdump with prefix"
+mpiexec -np ${NTOTRANKS} -ppn ${NRANKS} -d ${NDEPTH} --cpu-bind depth --no-vni -envall \
+        ${HOME}/src/hintdump/hintdump daos:/tmp/${DAOS_POOL}/${DAOS_CONT}/basic
+
+echo "hintdump somewhere else"
+touch /lus/flare/projects/CSC250STDM12_CNDA/robl/hintdump.out
+mpiexec -np ${NTOTRANKS} -ppn ${NRANKS} -d ${NDEPTH} --cpu-bind depth --no-vni -envall \
+        ${HOME}/src/hintdump/hintdump /lus/flare/projects/CSC250STDM12_CNDA/robl/hintdump.out
