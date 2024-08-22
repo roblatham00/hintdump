@@ -1,4 +1,5 @@
 CC=mpicc
+CFLAGS=-Wall -g
 
 hintdump: hintdump.c
 
