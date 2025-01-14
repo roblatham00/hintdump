@@ -43,7 +43,7 @@ int main (int argc, char ** argv)
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
 	CHECK(MPI_File_open(MPI_COMM_WORLD, argv[1],
-		    MPI_MODE_RDWR|MPI_MODE_CREATE|MPI_MODE_DELETE_ON_CLOSE,
+		    MPI_MODE_RDWR|MPI_MODE_CREATE,
 		    MPI_INFO_NULL, &fh));
 
 	CHECK(MPI_File_get_info(fh, &info_used));
