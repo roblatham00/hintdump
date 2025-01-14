@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <mpi.h>
 #include <limits.h>
+#include <stdlib.h>
 
 /* a little diddy to display what hints are supported by a given MPI-IO implementation */
 
@@ -32,6 +33,11 @@ static void dump_keys(MPI_Info info) {
     if (flag) printf("key = %-25s  value = %-10s\n", "bg_nodes_pset", value);
     return;
 }
+void usage(char *app)
+{
+    printf("usage: %s filename\n", app);
+
+}
 
 int main (int argc, char ** argv)
 {
@@ -41,6 +47,11 @@ int main (int argc, char ** argv)
 
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+        if (argc != 2) {
+            usage(argv[0]);
+            exit(-1);
+        }
 
 	CHECK(MPI_File_open(MPI_COMM_WORLD, argv[1],
 		    MPI_MODE_RDWR|MPI_MODE_CREATE,
