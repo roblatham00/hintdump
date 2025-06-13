@@ -5,9 +5,9 @@
 
 /* a little diddy to display what hints are supported by a given MPI-IO implementation */
 
-#define CHECK(fn) {int errcode; errcode = (fn); if (errcode != MPI_SUCCESS) handle_error(errcode, NULL); }
+#define CHECK(fn) {int errcode; errcode = (fn); if (errcode != MPI_SUCCESS) handle_error(errcode, #fn); }
 
-static void handle_error(int errcode, char *str)
+static void handle_error(int errcode, const char *str)
 {       
         char msg[MPI_MAX_ERROR_STRING];
         int resultlen;
